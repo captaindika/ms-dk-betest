@@ -1,0 +1,38 @@
+version: "3.7"
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    hostname: mongo
+    ports:
+      - 27017:27017
+    # volumes:
+    #   - mongo:/data/db
+    restart: always
+    networks:
+      - app
+  redis:
+    image: "redis"
+    container_name: redis
+    hostname: redis_dika_betest
+    networks:
+      - app
+    ports:
+      - 6379:6379
+  app:
+    build: .
+    ports:
+      - 4000:4000
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      WAIT_HOSTS: mongo:27017
+    env_file:
+      - .env
+    networks:
+      - app
+networks:
+  app:
+volumes:
+  mongo:
