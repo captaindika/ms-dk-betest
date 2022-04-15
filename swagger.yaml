@@ -1,0 +1,232 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  description: Optional multiline or single-line description in HTML.
+  version: 0.1.9
+servers:
+  - url: http://your-heroku.com
+    description: Optional server description, e.g. Heroku server
+  - url: http://localhost:4000
+    description: Optional server description, e.g. local server for testing
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        status:
+          type: integer
+        data:
+          type: object
+          properties:
+            _id:
+              type: string
+            userName:
+              type: string
+            emailAddress:
+              type: string
+            accountNumber:
+              type: string
+            identityNumber:
+              type: string
+    not_found_response:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: string
+  examples:
+    found:
+      summary: User found
+      value:
+        status: 200
+        data:
+          {
+            _id: 1qweqewcasfd123,
+            userName: mamet,
+            emailAddress: mametjamet@gmail.com,
+            accountNumber: "712312391237",
+            identityNumber: "323123871263t5",
+          }
+    notFound:
+      summary: User not found
+      value:
+        status: 200
+        message: User not found
+paths:
+  /user:
+    post:
+      tags:
+        - User
+      summary: Create an user.
+      description: Create user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                username:
+                  type: string
+                  example: mamet
+                email:
+                  type: string
+                  example: mamet.jamet@gmail.com
+                identity_number:
+                  type: string
+                  example: 327123421098713
+                account_number:
+                  type: string
+                  example: 82901238520
+        required: true
+      responses:
+        200:
+          description: Create user success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: User created
+    put:
+      tags:
+        - User
+      summary: Update user
+      description: update user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                userName:
+                  type: string
+                  example: momot
+                emailAddress:
+                  type: string
+                  example: momot.cimot@gmail.com
+      responses:
+        200:
+          description: Update user success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: User updated
+    delete:
+      tags:
+        - User
+      summary: Delete user
+      description: delete user
+      responses:
+        200:
+          description: Delete user success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: User deleted
+  /login:
+    post:
+      tags:
+        - User
+      summary: Login user for creating jwt token.
+      description: login user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  example: mamet.jamet@gmail.com
+                identity_number:
+                  type: string
+                  example: 327123421098713
+        required: true
+      responses:
+        200:
+          description: Login user success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Login success
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+  /user/account/:account_number:
+    get:
+      tags:
+        - User
+      summary: Get user by account number
+      description: Get user by account number
+      parameters:
+        - in: path
+          name: account_number
+          schema:
+            type: string
+            example: "1230384"
+          required: true
+      responses:
+        "200":
+          description: Get user by account number
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/User"
+                  - $ref: "#/components/schemas/not_found_response"
+              examples:
+                found:
+                  $ref: "#/components/examples/found"
+                notFound:
+                  $ref: "#/components/examples/notFound"
+  /user/account/:identity_number:
+    get:
+      tags:
+        - User
+      summary: Get user by identity number
+      description: Get user by identity number
+      parameters:
+        - in: path
+          name: identity_number
+          schema:
+            type: string
+            example: "3272012381247592"
+          required: true
+      responses:
+        "200":
+          description: Get user by identity number
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/found"
+                  - $ref: "#/components/schemas/notFound"
+              examples:
+                found:
+                  $ref: "#/components/examples/found"
+                notFound:
+                  $ref: "#/components/examples/notFound"
