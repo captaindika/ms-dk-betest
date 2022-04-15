@@ -4,7 +4,7 @@ require('dotenv').config()
 // const client = redis.createClient()
 
 // uncomment below if u want build for docker
-const client = redis.createClient({url: process.env.REDIS_URL})
+const client = redis.createClient({ url: process.env.REDIS_URL })
 
 // uncomment below, if u want build for remote redis
 // const client = redis.createClient({
